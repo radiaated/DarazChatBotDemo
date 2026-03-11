@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+
+
+# Python environment
+env/
+venv/
+penv/
+
+# Environment
+.env
+
+# Data store
+vectorstore
