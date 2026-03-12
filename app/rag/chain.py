@@ -1,38 +1,34 @@
-from langchain_google_genai import GoogleGenerativeAI
-from retriever import get_retriever
-from prompt import get_prompt
 from langchain_core.runnables import RunnableLambda
-from dotenv import load_dotenv
 
-load_dotenv()
+from rag.retriever import get_retriever
+from rag.prompt import get_prompt
+from llm.llm import get_llm
 
 
-model = GoogleGenerativeAI(model="gemini-2.5-flash")
+def retrieve_relevant_docs(query: str):
+
+    retriever = get_retriever()
+
+    docs = retriever.invoke(query)
+
+    docs_content = "".join(doc.page_content for doc in docs)
+
+    return {"query": query, "context": docs_content}
 
 
 def get_rag_chain():
 
-    retriever = get_retriever()
     prompt = get_prompt()
+    model = get_llm()
 
     chain = (
-        RunnableLambda(lambda x: {"question": x, "docs": retriever.invoke(x)})
+        RunnableLambda(retrieve_relevant_docs)
         | RunnableLambda(
-            lambda x: prompt.format_prompt(
-                **{
-                    "context": "".join(list(map(lambda x: x.page_content, x["docs"]))),
-                    "question": x["question"],
-                }
+            lambda context_query: prompt.format_prompt(
+                context=context_query["context"], query=context_query["query"]
             )
         )
-        | RunnableLambda(lambda x: model.invoke(x))
+        | model
     )
 
     return chain
-
-
-# chain = get_rag_chain()
-
-# a = chain.invoke("Are there any offers for a new Daraz user")
-
-# print(a)

@@ -1,18 +1,15 @@
 from langchain_community.vectorstores import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
-
-import os
+from config import settings
 
 
 def get_retriever():
 
-    PROJECT_PATH = os.getcwd()
+    embedding = GoogleGenerativeAIEmbeddings(model=settings.EMBEDDING_MODEL_NAME)
 
-    VECTOR_STORE_PATH = os.path.join(PROJECT_PATH, "vectorstore")
-
-    embedding = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-
-    db = Chroma(embedding_function=embedding, persist_directory=VECTOR_STORE_PATH)
+    db = Chroma(
+        embedding_function=embedding, persist_directory=settings.VECTOR_STORE_PATH
+    )
 
     retriver = db.as_retriever(
         search_type="similarity_score_threshold",
