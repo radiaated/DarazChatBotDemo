@@ -3,9 +3,9 @@ import type { Message } from "../types/ChatBot";
 
 interface ChatBotContextType {
   isConnected: boolean;
-  chatbotWSMessage: string | null;
   sendQuery: (query: string) => void;
   messages: Message[];
+  isSending: boolean;
 }
 
 interface ChatBotContextProviderProps {
@@ -18,15 +18,22 @@ export const ChatBotContextProvider = ({
   children,
 }: ChatBotContextProviderProps) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [chatbotWSMessage, setchatbotWSMessage] = useState<string | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [isSending, setIsSending] = useState<boolean>(false);
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      text: "Hello, welcome to Daraz customer service. How can we help you?",
+      sentBy: "bot",
+      dateSent: new Date(),
+    },
+  ]);
 
   const ws = useRef<WebSocket | null>(null);
 
-  const addMessage = (newText: string) => {
+  const addMessage = (newText: string, sentBy: "bot" | "customer") => {
     const message: Message = {
       text: newText,
       dateSent: new Date(),
+      sentBy: sentBy,
     };
 
     setMessages((state) => {
@@ -38,36 +45,40 @@ export const ChatBotContextProvider = ({
   const sendQuery = (query: string) => {
     if (ws.current) {
       ws.current.send(JSON.stringify({ query }));
-      addMessage(query);
+      addMessage(query, "customer");
+      setTimeout(() => {
+        setIsSending(true);
+      }, 300);
     }
   };
 
   const value = {
     isConnected,
-    chatbotWSMessage,
     sendQuery,
     messages,
+    isSending,
   };
 
   useEffect(() => {
     ws.current = new WebSocket(import.meta.env.VITE_WS_URL + "/chat/chat_bot/");
 
     ws.current.onopen = () => {
+      setIsSending(false);
       setIsConnected(true);
-      setchatbotWSMessage(null);
     };
     ws.current.onclose = () => {
+      setIsSending(false);
       setIsConnected(false);
-      setchatbotWSMessage(null);
     };
     ws.current.onerror = () => {
+      setIsSending(false);
       setIsConnected(false);
-      setchatbotWSMessage("Disconnected because of some error.");
     };
     ws.current.onmessage = (event) => {
       const res = event.data;
       const json = JSON.parse(res);
-      addMessage(json.response);
+      setIsSending(false);
+      addMessage(json.response, "bot");
     };
   }, []);
 

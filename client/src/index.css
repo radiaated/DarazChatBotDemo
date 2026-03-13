@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@import "../node_modules/@fortawesome/fontawesome-free/css/all.min.css";
+
+@theme {
+  --font-display: "Roboto", sans-serif;
+  --color-primary: #f95606;
+
+  --animate-popup-left: popup-left 0.3s ease-out forwards;
+  --animate-popup-right: popup-right 0.3s ease-out forwards;
+
+  @keyframes popup-left {
+    0% {
+      transform: translateX(-100%) scale(0);
+      opacity: 0;
+      100% {
+        transform: translateX(0) scale(1);
+      }
+    }
+  }
+  @keyframes popup-right {
+    0% {
+      transform: translateX(100%) scale(0);
+      opacity: 0;
+      100% {
+        transform: translateX(0) scale(1);
+      }
+    }
+  }
+}
+
+body {
+  @apply font-display bg-[#eaeef2];
+}
+
+/* width */
+#chat-message-container::-webkit-scrollbar {
+  width: 0.3em;
+}
+
+/* Track */
+#chat-message-container::-webkit-scrollbar-track {
+  @apply bg-gray-300;
+}
+
+/* Handle */
+#chat-message-container::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 rounded-full;
+}
+
+/* Handle on hover */
+#chat-message-container::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500;
+}
