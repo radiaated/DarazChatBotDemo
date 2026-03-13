@@ -10,9 +10,8 @@ import os
 load_dotenv()
 
 PROJECT_PATH = os.getcwd()
-DOCUMENT_FILE = os.path.join("data", "daraz_faq.pdf")
 
-DOCUMENT_FILE_PATH = os.path.join(PROJECT_PATH, DOCUMENT_FILE)
+DOCUMENT_FILE_PATH = os.path.join(PROJECT_PATH, "data", "daraz_faq.pdf")
 VECTOR_STORE_PATH = os.path.join(PROJECT_PATH, "app", "vectorstore")
 
 
