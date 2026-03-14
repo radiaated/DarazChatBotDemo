@@ -46,7 +46,7 @@ const ChatBotPage = () => {
   }, [chatBotCxt?.messages]);
 
   return (
-    <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-100 h-[80vh] bg-[#eaeef2] overflow-clip rounded-3xl border border-gray-100 drop-shadow-xl">
+    <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-100 max-w-[90%] h-[80vh] bg-[#eaeef2] overflow-clip rounded-3xl border border-gray-100 drop-shadow-xl">
       <div className="relative h-full">
         <div className="flex justify-center items-center gap-2 p-4 bg-white drop-shadow-lg">
           <div className="border border-primary p-[0.15em] rounded-full overflow-clip">
