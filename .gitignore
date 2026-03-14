@@ -12,6 +12,3 @@ penv/
 
 # Environment
 .env
-
-# Data store
-vectorstore
