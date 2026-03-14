@@ -21,12 +21,10 @@ const MessageContainer = ({ message }: MessageContainerProps) => {
       } animate-popup-left`}
     >
       <div
-        className={`flex flex-col gap-1 p-4 text-sm w-75 rounded-xl ${message.sentBy == "bot" ? "bg-primary text-white" : "bg-white text-gray-700"}`}
+        className={`flex flex-col gap-1.5 p-4 text-sm w-75 rounded-xl ${message.sentBy == "bot" ? "bg-primary text-white" : "bg-white text-gray-700"}`}
       >
         {message.text.split("\n").map((paragraph, idx) => (
-          <p key={idx}>
-            <Markdown>{paragraph}</Markdown>
-          </p>
+          <Markdown key={idx}>{paragraph}</Markdown>
         ))}
       </div>
       <div className="text-[0.65rem] tracking-wide text-gray-500">

@@ -1,5 +1,7 @@
 import {
   useContext,
+  useEffect,
+  useRef,
   useState,
   type ChangeEvent,
   type SubmitEventHandler,
@@ -13,11 +15,35 @@ const ChatBotPage = () => {
 
   const chatBotCxt = useContext(ChatBotContext);
 
+  const chatMessageContainer = useRef<HTMLDivElement | null>(null);
+
   const onSubmit: SubmitEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
-    chatBotCxt?.sendQuery(queryText);
-    setQueryText("");
+    if (queryText.length !== 0) {
+      chatBotCxt?.sendQuery(queryText);
+      setQueryText("");
+    }
   };
+
+  const onEnterKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key == "Enter" && !event.shiftKey) {
+      event.preventDefault();
+      event.currentTarget.form?.requestSubmit();
+    }
+  };
+
+  useEffect(() => {
+    if (
+      chatBotCxt?.messages &&
+      chatBotCxt?.messages.length > 1 &&
+      chatMessageContainer.current
+    ) {
+      chatMessageContainer.current.scrollTo({
+        top: chatMessageContainer.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [chatBotCxt?.messages]);
 
   return (
     <div className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] w-100 h-[80vh] bg-[#eaeef2] overflow-clip rounded-3xl border border-gray-100 drop-shadow-xl">
@@ -54,6 +80,7 @@ const ChatBotPage = () => {
         <div
           id="chat-message-container"
           className="flex flex-col gap-2 h-[78%] p-4 overflow-scroll"
+          ref={chatMessageContainer}
         >
           {chatBotCxt?.messages.map((message, idx) => (
             <MessageContainer message={message} key={idx} />
@@ -76,6 +103,7 @@ const ChatBotPage = () => {
             <div id="chat-input-container" className="w-full">
               <textarea
                 name="querymessage"
+                onKeyDown={onEnterKeyDown}
                 value={queryText}
                 onChange={(event: ChangeEvent<HTMLTextAreaElement>) =>
                   setQueryText(event.target.value)
