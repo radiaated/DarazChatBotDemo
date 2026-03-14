@@ -1,4 +1,4 @@
-from fastapi import APIRouter, WebSocket
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from schemas.chat_schemas import ChatQuery, ChatResponse
 from services.chat_service import resolve_query
 
@@ -16,18 +16,30 @@ async def chat_bot(ws: WebSocket):
     # Accept WebSocket connection
     await ws.accept()
 
-    while True:
-        # Receive JSON data from client
-        data = await ws.receive_json()
+    try:
 
-        # Validate and parse incoming query
-        chat_query = ChatQuery(**data)
+        while True:
+            # Receive JSON data from client
+            data = await ws.receive_json()
 
-        # Generate chatbot response
-        response = resolve_query(chat_query.query)
+            # Validate and parse incoming query
+            chat_query = ChatQuery(**data)
 
-        # Format response using schema
-        chat_response = ChatResponse(response=response)
+            # Generate chatbot response
+            response = resolve_query(chat_query.query)
 
-        # Send response back to client
-        await ws.send_json(chat_response.model_dump())
+            # Format response using schema
+            chat_response = ChatResponse(response=response)
+
+            # Send response back to client
+            await ws.send_json(chat_response.model_dump())
+
+    except WebSocketDisconnect:
+
+        # Client disconnected gracefully
+        print("Client disconnected")
+
+    except Exception as e:
+
+        # Optional: handle other unexpected errors
+        print(f"WebSocket error: {e}")
