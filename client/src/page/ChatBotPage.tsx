@@ -124,8 +124,15 @@ const ChatBotPage = () => {
             </div>
           </form>
         </div>
-        <div className="w-full bg-[#f7f7f8] text-gray-600 text-xs text-center p-2 absolute bottom-0 left-0">
-          Powered by AI
+        <div className="flex gap-1 justify-center w-full bg-[#f7f7f8] text-gray-600 text-xs text-center p-2 absolute bottom-0 left-0">
+          <div>Powered by AI |</div>
+          <a
+            href="https://github.com/radiaated/DarazChatBotDemo"
+            target="_blank"
+            className="block font-black text-blue-700 hover:text-blue-900 duration-100"
+          >
+            Github <i className="fa-brands fa-github"></i>
+          </a>
         </div>
       </div>
     </div>
