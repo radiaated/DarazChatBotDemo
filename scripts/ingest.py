@@ -15,20 +15,24 @@ DOCUMENT_FILE_PATH = os.path.join(PROJECT_PATH, "data", "daraz_faq.pdf")
 VECTOR_STORE_PATH = os.path.join(PROJECT_PATH, "app", "vectorstore")
 
 
-pdf_loader = PyPDFLoader(DOCUMENT_FILE_PATH)
+def ingest():
+
+    pdf_loader = PyPDFLoader(DOCUMENT_FILE_PATH)
+
+    pdf_doc = pdf_loader.load()
+
+    splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=20)
+
+    # Only two chunks of splitted documents are taken for testing
+    docs = splitter.split_documents(pdf_doc[:2])
+
+    embedding = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
+
+    Chroma.from_documents(
+        documents=docs, embedding=embedding, persist_directory=VECTOR_STORE_PATH
+    )
 
 
-pdf_doc = pdf_loader.load()
+if __name__ == "__main__":
 
-
-splitter = RecursiveCharacterTextSplitter(chunk_size=200, chunk_overlap=20)
-
-# Only two chunks of splitted documents are taken for testing
-docs = splitter.split_documents(pdf_doc[:2])
-
-embedding = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-
-
-db = Chroma.from_documents(
-    documents=docs, embedding=embedding, persist_directory=VECTOR_STORE_PATH
-)
+    ingest()
