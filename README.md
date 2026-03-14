@@ -10,32 +10,32 @@ This project implements a Retrieval-Augmented Generation (RAG) pipeline that ret
 
 ## RAG Pipeline
 
-1. **Data Collection**
-   Data is collected from Daraz's [FAQ page](https://buyer-helpcenter.daraz.com.np/s/page/category).
+1. **Data Collection** <br />
+   Data is collected from Daraz's [FAQ page](https://buyer-helpcenter.daraz.com.np/s/page/category). <br />
    ↓
-2. **Data Preprocessing**
-   The collected data is cleaned, formatted, and saved as a PDF document.
+2. **Data Preprocessing** <br />
+   The collected data is cleaned, formatted, and saved as a PDF document. <br />
    ↓
-3. **Data loading and Chunking**
-   The PDF document is loaded and split into smaller chunks with a token size of `200` and an overlap of `20`.
+3. **Data loading and Chunking** <br />
+   The [PDF document](https://github.com/radiaated/DarazChatBotDemo/blob/main/data/daraz_faq.pdf) is loaded and split into smaller chunks with a token size of `200` and an overlap of `20`. <br />
    ↓
-4. **Embedding Generation**
-   Each chunk is converted into vector embeddings using the Gemini embedding model `models/gemini-embedding-001`.
+4. **Embedding Generation** <br />
+   Each chunk is converted into vector embeddings using the Gemini embedding model `models/gemini-embedding-001`. <br />
    ↓
-5. **Vector Database Storage**
-   The generated embeddings are stored in the Chroma vector database.
+5. **Vector Database Storage** <br />
+   The generated embeddings are stored in the Chroma vector database. <br />
    ↓
-6. **User Query Input → Query Embedding**
-   The customer's query is converted into an embedding vector using the same embedding model.
+6. **User Query Input → Query Embedding** <br />
+   The customer's query is converted into an embedding vector using the same embedding model. <br />
    ↓
-7. **Retrieval**
-   The vector database performs a similarity search and retrieves the top 3 most relevant chunks related to the query.
+7. **Retrieval** <br />
+   The vector database performs a similarity search and retrieves the top 3 most relevant chunks related to the query. <br />
    ↓
-8. **Context Augmentation**
-   The retrieved chunks are added to the prompt as context.
+8. **Context Augmentation** <br />
+   The retrieved chunks are added to the prompt as context. <br />
    ↓
-9. **Response Generation**
-   The LLM, Gemini's `gemini-2.5-flash` model, generates the answer using the retrieved context.
+9. **Response Generation** <br />
+   The LLM, Gemini's `gemini-2.5-flash` model, generates the answer using the retrieved context. <br />
 
 ## Technology Stack
 
