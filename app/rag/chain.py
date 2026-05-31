@@ -1,6 +1,6 @@
 from langchain_core.runnables import RunnableLambda
 
-from rag.retriever import get_retriever
+from rag.retriever import retrieve_docs
 from rag.prompt import get_prompt
 from llm.llm import get_llm
 
@@ -12,13 +12,7 @@ def retrieve_relevant_docs(query: str):
     """
 
     # Initialize retriever
-    retriever = get_retriever()
-
-    # Retrieve documents related to the query
-    docs = retriever.invoke(query)
-
-    # Combine document contents into a single context string
-    docs_content = "".join(doc.page_content for doc in docs)
+    docs_content = retrieve_docs(query=query)
 
     return {"query": query, "context": docs_content}
 

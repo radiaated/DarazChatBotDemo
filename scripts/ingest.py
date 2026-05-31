@@ -1,9 +1,10 @@
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_chroma import Chroma
 
 from dotenv import load_dotenv
+import requests
+
 import os
 
 # Load environment variables from .env file
@@ -13,6 +14,13 @@ load_dotenv()
 PROJECT_PATH = os.getcwd()
 DOCUMENT_FILE_PATH = os.path.join(PROJECT_PATH, "data", "daraz_faq.pdf")
 VECTOR_STORE_PATH = os.path.join(PROJECT_PATH, "app", "vectorstore")
+
+# Chroma cloud configurations
+CHROMA_BASE_URL = os.getenv("CHROMA_BASE_URL")
+CHROMA_API_KEY = os.getenv("CHROMA_API_KEY")
+CHROMA_TENANT = os.getenv("CHROMA_TENANT")
+CHROMA_DATABASE = os.getenv("CHROMA_DATABASE")
+CHROMA_COLLECTION_ID = os.getenv("CHROMA_COLLECTION_ID")
 
 
 def ingest():
@@ -43,12 +51,34 @@ def ingest():
         # Initialize embedding model
         embedding = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
 
+        texts = [doc.page_content for doc in docs]
+        embeddings = embedding.embed_documents(texts)
+
         print("[*] Saving chroma vector database from documents and embeddings...")
 
-        # Create and persist Chroma vector store
-        Chroma.from_documents(
-            documents=docs, embedding=embedding, persist_directory=VECTOR_STORE_PATH
+        # Create and persist remote Chroma vector store
+
+        headers = {
+            "x-chroma-token": CHROMA_API_KEY,
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "ids": [f"doc_{i}" for i in range(len(texts))],
+            "documents": texts,
+            "embeddings": embeddings,
+            "metadatas": [doc.metadata for doc in docs],
+        }
+
+        response = requests.post(
+            f"{CHROMA_BASE_URL}/api/v2/tenants/{CHROMA_TENANT}/databases/{CHROMA_DATABASE}/collections/{CHROMA_COLLECTION_ID}/add",
+            headers=headers,
+            json=payload,
         )
+
+        print("[*] Chromadb cloud response:")
+
+        print("\tResponse status:", response.status_code)
+        print("\tResponse message:", response.text)
 
         print("[✓] Chroma vector database saved.")
 

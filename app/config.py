@@ -29,6 +29,13 @@ class Settings(BaseSettings):
     # Path to the persisted Chroma vector store
     VECTOR_STORE_PATH: str = os.path.join(PROJECT_PATH, "vectorstore")
 
+    # Chroma cloud configurations
+    CHROMA_BASE_URL: str
+    CHROMA_API_KEY: str
+    CHROMA_TENANT: str
+    CHROMA_DATABASE: str
+    CHROMA_COLLECTION_ID: str
+
 
 # Global settings instance
 settings = Settings()

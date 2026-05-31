@@ -9,6 +9,7 @@ __pycache__/
 env/
 venv/
 penv/
+penv_http_chromadb_web_only/
 
 # Environment
 .env
