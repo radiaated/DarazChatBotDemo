@@ -15,10 +15,10 @@ class Settings(BaseSettings):
     """
 
     # Allowed CORS origins
-    ALLOWED_ORIGINS: str
+    ALLOWED_ORIGINS: str = os.environ.get("ALLOWED_ORIGINS", "")
 
     # Google Gemini API key
-    GEMINI_API_KEY: str
+    GEMINI_API_KEY: str = os.environ.get("GEMINI_API_KEY", "")
 
     # LLM model name
     MODEL_NAME: str = "gemini-2.5-flash"
@@ -30,11 +30,11 @@ class Settings(BaseSettings):
     VECTOR_STORE_PATH: str = os.path.join(PROJECT_PATH, "vectorstore")
 
     # Chroma cloud configurations
-    CHROMA_BASE_URL: str
-    CHROMA_API_KEY: str
-    CHROMA_TENANT: str
-    CHROMA_DATABASE: str
-    CHROMA_COLLECTION_ID: str
+    CHROMA_BASE_URL: str = os.environ.get("CHROMA_BASE_URL", "")
+    CHROMA_API_KEY: str = os.environ.get("CHROMA_API_KEY", "")
+    CHROMA_TENANT: str = os.environ.get("CHROMA_TENANT", "")
+    CHROMA_DATABASE: str = os.environ.get("CHROMA_DATABASE", "")
+    CHROMA_COLLECTION_ID: str = os.environ.get("CHROMA_COLLECTION_ID", "")
 
 
 # Global settings instance
